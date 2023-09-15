@@ -1,3 +1,4 @@
 langchain
 streamlit
-
+pypdf2
+python-docx
