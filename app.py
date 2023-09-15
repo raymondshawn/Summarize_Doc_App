@@ -8,7 +8,6 @@ from langchain.chains.summarize import load_summarize_chain
 
 def read_file_as_string(file):
 
-
     # To convert to a string based IO:
     stringio = StringIO(file.getvalue().decode("utf-8"))
 
@@ -26,6 +25,7 @@ def create_documents(text):
     return documents
 
 
+
 def generate_summary(docs):
     llm = ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo-16k")
     chain = load_summarize_chain(llm, chain_type="stuff")
@@ -35,18 +35,23 @@ def generate_summary(docs):
 
 st.title("🦜️🔗 Summarize  File")
 st.text("Upload txt file")
-uploaded_file = st.file_uploader("Choose a  txt file")
+uploaded_files = st.file_uploader("Choose a  txt file",accept_multiple_files=True)
 
 with  st.form("Form", clear_on_submit=True):
     api_key = st.text_area("Enter your OpenAI key:")
 
     submitted = st.form_submit_button("Submit")
-    if submitted and api_key and uploaded_file:
+    if submitted and api_key and uploaded_files:
+        os.environ["OPENAI_API_KEY"] = api_key
         with st.spinner('Generating Summary...'):
-            os.environ["OPENAI_API_KEY"] = api_key
-            text = read_file_as_string(uploaded_file)
-            documents = create_documents(text)
-            response = generate_summary(documents)
 
-            if len(response):
-                st.info(response)
+            for file in uploaded_files:
+                st.write(file.name)
+
+                text = read_file_as_string(file)
+                documents = create_documents(text)
+                response = generate_summary(documents)
+
+                if len(response):
+                    st.write(f"summary for {file.name}")
+                    st.info(response)
