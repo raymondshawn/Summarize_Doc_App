@@ -1,9 +1,7 @@
-import langchain
 import streamlit as st
 from io import StringIO
 from langchain.chat_models import ChatOpenAI
 from langchain.text_splitter import CharacterTextSplitter
-from langchain.vectorstores import Chroma
 import os
 from langchain.chains.summarize import load_summarize_chain
 
